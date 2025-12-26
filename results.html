@@ -5,18 +5,30 @@
   <title>EvadeSS – Enter Scan PIN</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; background:#050509; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
-    .wrap { max-width:1200px; margin:2rem auto; padding:2rem; text-align:center; }
-    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:1rem; }
+    body { margin:0; background:#020617; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
+    .wrap { max-width:1200px; margin:3rem auto; padding:2rem; text-align:center; }
+    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:0.5rem; font-size:2.2rem; }
     p { color:#9ca3af; margin-bottom:2rem; }
-    input { width:250px; padding:1rem; background:#111827; border:1px solid #1f2937; border-radius:8px; color:#f9fafb; font-size:1.5rem; text-align:center; text-transform:uppercase; }
-    button { margin-top:1.5rem; padding:0.9rem 2rem; border:none; border-radius:8px; background:#c41e3a; color:white; font-weight:600; cursor:pointer; }
+    input {
+      width:260px; padding:1rem; background:#020617;
+      border:1px solid #1f2937; border-radius:10px;
+      color:#f9fafb; font-size:1.6rem; text-align:center;
+      text-transform:uppercase; letter-spacing:0.25em;
+    }
+    button {
+      margin-top:1.5rem; padding:0.9rem 2.5rem;
+      border:none; border-radius:999px;
+      background:#c41e3a; color:white;
+      font-weight:600; font-family:'Space Grotesk',sans-serif;
+      cursor:pointer; box-shadow:0 15px 35px rgba(0,0,0,0.6);
+    }
+    button:hover { transform:translateY(-1px); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Enter Scan PIN</h1>
-    <p>Paste your 8‑character PIN from EvadeSS scanner.</p>
+    <h1>EvadeSS Scan Viewer</h1>
+    <p>Paste your 8‑character PIN to open the full scan dashboard.</p>
     <input id="pin-input" type="text" maxlength="8" placeholder="J9T9S3J0">
     <br>
     <button onclick="openResults()">Load Results</button>
@@ -30,7 +42,7 @@
         alert('Enter valid 8-character PIN (A-Z, 0-9)');
         return;
       }
-      // go to the dedicated view page
+      // manual pin: open dashboard without score/hits (will show "no data")
       window.location.href = `results-view.html?pin=${pin}`;
     }
   </script>
