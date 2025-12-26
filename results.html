@@ -1,182 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EvadeSS Scan Results</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-dark: #0a0a0f;
-            --bg-card: rgba(15, 18, 30, 0.95);
-            --border-glow: rgba(196, 30, 58, 0.3);
-            --accent-red: #c41e3a;
-            --accent-green: #2d7d2d;
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: linear-gradient(135deg, var(--bg-dark), #1a1a2e); color: var(--text-main); font-family: 'JetBrains Mono', monospace; min-height: 100vh; }
-        .terminal { max-width: 1400px; margin: 2rem auto; background: var(--bg-card); border-radius: 20px; border: 1px solid rgba(148, 163, 184, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); overflow: hidden; }
-        .terminal-header { background: linear-gradient(90deg, #1a1a2e, #16213e); padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
-        .window-controls { display: flex; gap: 0.75rem; }
-        .control { width: 14px; height: 14px; border-radius: 50%; }
-        .control.red { background: #ff5f57; }
-        .control.yellow { background: #ffbd2e; }
-        .control.green { background: #28ca42; }
-        .terminal-title { flex: 1; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; background: linear-gradient(45deg, #c41e3a, #2d7d2d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .terminal-body { padding: 3rem; min-height: 700px; }
-        .scan-header { text-align: center; margin-bottom: 3rem; padding: 2rem; background: rgba(20, 24, 40, 0.8); border-radius: 16px; border: 1px solid var(--border-glow); }
-        .scan-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; margin-bottom: 1rem; background: linear-gradient(45deg, var(--accent-red), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .scan-pin { font-size: 4rem; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase; background: linear-gradient(90deg, #c41e3a, #f9fafb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace; }
-        .scan-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 2.5rem 0; }
-        .stat-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(196, 30, 58, 0.2); border-radius: 12px; padding: 2rem 1.5rem; text-align: center; transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .stat-card:hover { border-color: var(--accent-red); box-shadow: 0 0 30px rgba(196, 30, 58, 0.4); transform: translateY(-5px); }
-        .stat-value { font-size: 3rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.5rem; }
-        .stat-high { color: #ef4444; }
-        .stat-medium { color: #f59e0b; }
-        .stat-low { color: #10b981; }
-        .stat-label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
-        .results-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(148, 163, 184, 0.15); border-radius: 12px; padding: 2rem; max-height: 450px; overflow-y: auto; }
-        .panel-title { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 600; color: var(--accent-red); }
-        .hit-item { background: rgba(239, 68, 68, 0.2); border-left: 4px solid var(--accent-red); padding: 1rem; margin-bottom: 1rem; border-radius: 0 8px 8px 0; color: #fca5a5; font-family: 'JetBrains Mono', monospace; word-break: break-all; }
-        .process-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(148, 163, 184, 0.1); margin-bottom: 1rem; }
-        .process-name { font-weight: 600; color: var(--text-main); font-family: 'JetBrains Mono', monospace; }
-        .process-details { color: var(--text-muted); font-size: 0.85rem; }
-        .loading { text-align: center; padding: 4rem; color: var(--text-muted); }
-        .loading i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; animation: spin 2s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @media (max-width: 768px) { .terminal { margin: 1rem; } .scan-pin { font-size: 2.5rem; letter-spacing: 0.2em; } .results-grid { grid-template-columns: 1fr; } .stat-value { font-size: 2rem; } }
-    </style>
+  <meta charset="UTF-8">
+  <title>EvadeSS – Enter Scan PIN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#050509; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
+    .wrap { max-width:1200px; margin:2rem auto; padding:2rem; text-align:center; }
+    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:1rem; }
+    p { color:#9ca3af; margin-bottom:2rem; }
+    input { width:250px; padding:1rem; background:#111827; border:1px solid #1f2937; border-radius:8px; color:#f9fafb; font-size:1.5rem; text-align:center; text-transform:uppercase; }
+    button { margin-top:1.5rem; padding:0.9rem 2rem; border:none; border-radius:8px; background:#c41e3a; color:white; font-weight:600; cursor:pointer; }
+  </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="terminal-header">
-            <div class="window-controls">
-                <div class="control red"></div>
-                <div class="control yellow"></div>
-                <div class="control green"></div>
-            </div>
-            <div class="terminal-title">
-                <i class="fas fa-shield-alt"></i> EVADE SS ULTRA SCAN RESULTS
-            </div>
-        </div>
-        <div class="terminal-body">
-            <div id="results-container">
-                <!-- Input / loading state -->
-                <div class="loading" id="loading-state">
-                    <i class="fas fa-key"></i>
-                    <h2>Enter Scan PIN</h2>
-                    <p>Paste your 8-character PIN from EvadeSS scanner</p>
-                    <input id="pin-input" type="text" maxlength="8" placeholder="J9T9S3J0"
-                           style="width: 250px; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(148,163,184,0.3); border-radius: 8px; color: #f9fafb; font-size: 1.5rem; font-family: 'JetBrains Mono'; text-transform: uppercase; text-align: center; margin-top: 1.5rem;">
-                    <div style="margin-top: 1.5rem;">
-                        <button onclick="loadPin()" style="padding: 1rem 2rem; background: #c41e3a; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Load Results</button>
-                    </div>
-                    <p style="margin-top: 1rem; font-size: 0.8rem; color: #6b7280;">
-                        Or open directly: https://www.evadess.com/results#results/pin/YOURPIN
-                    </p>
-                </div>
+  <div class="wrap">
+    <h1>Enter Scan PIN</h1>
+    <p>Paste your 8‑character PIN from EvadeSS scanner.</p>
+    <input id="pin-input" type="text" maxlength="8" placeholder="J9T9S3J0">
+    <br>
+    <button onclick="openResults()">Load Results</button>
+  </div>
 
-                <!-- Results state -->
-                <div id="results-state" style="display: none;">
-                    <div class="scan-header">
-                        <div class="scan-title">ULTRA SCAN ANALYSIS</div>
-                        <div class="scan-pin" id="scan-pin">J9T9S3J0</div>
-                    </div>
-                    <div class="scan-stats">
-                        <div class="stat-card">
-                            <div class="stat-value stat-high" id="risk-score">🚨 285</div>
-                            <div class="stat-label">Risk Score</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value stat-high" id="hit-count">15</div>
-                            <div class="stat-label">Critical Hits</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value stat-high" id="status">DETECTED</div>
-                            <div class="stat-label">Status</div>
-                        </div>
-                    </div>
-                    <div class="results-grid">
-                        <div class="results-panel">
-                            <div class="panel-title">
-                                <i class="fas fa-exclamation-triangle"></i> CRITICAL HITS
-                            </div>
-                            <div id="hits-list">
-                                <div class="hit-item">C:\Users\User\Desktop\ocean_loader.exe</div>
-                                <div class="hit-item">C:\cheats\echo.dll</div>
-                                <div class="hit-item">C:\hwid\spoofer_driver.sys</div>
-                                <div class="hit-item">C:\Users\User\AppData\Local\aimware.exe</div>
-                            </div>
-                        </div>
-                        <div class="results-panel">
-                            <div class="panel-title">
-                                <i class="fas fa-tasks"></i> RUNNING PROCESSES
-                            </div>
-                            <div id="processes-list">
-                                <div class="process-item">
-                                    <div class="process-name">cs2.exe</div>
-                                    <div class="process-details">[PID 1234]</div>
-                                </div>
-                                <div class="process-item">
-                                    <div class="process-name">evade-ultra.exe</div>
-                                    <div class="process-details">[PID 5678]</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- /results-state -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function parsePinFromUrl() {
-            const hash = window.location.hash || "";
-            const m = hash.match(/#results\/pin\/([A-Z0-9]{8})/i);
-            if (m) return m[1].toUpperCase();
-            return null;
-        }
-
-        function showResults(pin) {
-            document.getElementById('loading-state').style.display = 'none';
-            document.getElementById('results-state').style.display = 'block';
-            document.getElementById('scan-pin').textContent = pin;
-
-            const score = Math.floor(Math.random() * 200) + 100;
-            document.getElementById('risk-score').textContent = `🚨 ${score}`;
-            document.getElementById('status').textContent = score > 200 ? 'DETECTED' : 'CLEAN';
-            document.getElementById('hit-count').textContent = Math.floor(Math.random() * 20) + 5;
-        }
-
-        function loadPin() {
-            const input = document.getElementById('pin-input');
-            const pin = (input.value || "").trim().toUpperCase();
-            if (!/^[A-Z0-9]{8}$/.test(pin)) {
-                alert('Enter valid 8-character PIN (A-Z, 0-9)');
-                return;
-            }
-            // update URL hash so link can be shared
-            window.location.hash = `results/pin/${pin}`;
-            // immediately show results without reload
-            showResults(pin);
-        }
-
-        window.addEventListener('load', () => {
-            const pin = parsePinFromUrl();
-            if (pin) {
-                // came from batch link or shared URL
-                document.getElementById('pin-input').value = pin;
-                showResults(pin);
-            } else {
-                // manual input mode
-                document.getElementById('loading-state').style.display = 'block';
-                document.getElementById('results-state').style.display = 'none';
-            }
-        });
-    </script>
+  <script>
+    function openResults() {
+      const input = document.getElementById('pin-input');
+      const pin = (input.value || "").trim().toUpperCase();
+      if (!/^[A-Z0-9]{8}$/.test(pin)) {
+        alert('Enter valid 8-character PIN (A-Z, 0-9)');
+        return;
+      }
+      // go to the dedicated view page
+      window.location.href = `results-view.html?pin=${pin}`;
+    }
+  </script>
 </body>
 </html>
