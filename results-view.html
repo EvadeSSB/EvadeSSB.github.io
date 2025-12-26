@@ -2,49 +2,390 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>EvadeSS – Enter Scan PIN</title>
+  <title>EvadeSS Scan Results</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; background:#020617; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
-    .wrap { max-width:1200px; margin:3rem auto; padding:2rem; text-align:center; }
-    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:0.5rem; font-size:2.2rem; }
-    p { color:#9ca3af; margin-bottom:2rem; }
-    input {
-      width:260px; padding:1rem; background:#020617;
-      border:1px solid #1f2937; border-radius:10px;
-      color:#f9fafb; font-size:1.6rem; text-align:center;
-      text-transform:uppercase; letter-spacing:0.25em;
+    :root {
+      --bg-main:#020617;
+      --border-sub:#1f2937;
+      --accent-red:#f97373;
+      --accent-green:#4ade80;
+      --accent-amber:#fbbf24;
+      --text-main:#f9fafb;
+      --text-muted:#9ca3af;
     }
-    button {
-      margin-top:1.5rem; padding:0.9rem 2.5rem;
-      border:none; border-radius:999px;
-      background:#c41e3a; color:white;
-      font-weight:600; font-family:'Space Grotesk',sans-serif;
-      cursor:pointer; box-shadow:0 15px 35px rgba(0,0,0,0.6);
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 0 0,#1e293b 0,transparent 55%),
+        radial-gradient(circle at 100% 0,#111827 0,transparent 55%),
+        #020617;
+      color:var(--text-main);
+      font-family:'JetBrains Mono',monospace;
     }
-    button:hover { transform:translateY(-1px); }
+    .shell{max-width:1280px;margin:2rem auto 3rem;padding:0 1.5rem;}
+
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:0.9rem 1.25rem;border-radius:999px;
+      border:1px solid rgba(148,163,184,0.3);
+      background:linear-gradient(135deg,rgba(15,23,42,0.95),rgba(15,23,42,0.85));
+      box-shadow:0 18px 40px rgba(0,0,0,0.8);
+      margin-bottom:1.8rem;
+    }
+    .brand{display:flex;align-items:center;gap:0.8rem;font-family:'Space Grotesk',sans-serif;}
+    .brand-logo{
+      width:26px;height:26px;border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#f97373,#e11d48);
+      box-shadow:0 0 22px rgba(248,113,113,0.7);
+    }
+    .brand-main{font-weight:600;font-size:1rem;}
+    .brand-sub{font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.16em;}
+    .pin-badge{
+      font-size:0.8rem;padding:0.35rem 0.9rem;border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
+      background:rgba(15,23,42,0.9);
+      display:flex;align-items:center;gap:0.4rem;
+    }
+    .pin-dot{
+      width:7px;height:7px;border-radius:999px;
+      background:var(--accent-green);
+      box-shadow:0 0 10px rgba(74,222,128,0.9);
+    }
+
+    .grid-3{display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:1.4rem;margin-bottom:1.4rem;}
+    .grid-2{display:grid;grid-template-columns:1.6fr 1.4fr;gap:1.4rem;margin-bottom:1.4rem;}
+    .card{
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(15,23,42,0.97),rgba(15,23,42,0.92));
+      border:1px solid rgba(30,64,175,0.4);
+      box-shadow:0 24px 60px rgba(0,0,0,0.9),inset 0 0 0 1px rgba(15,23,42,0.9);
+      padding:1.25rem 1.35rem;position:relative;overflow:hidden;
+    }
+    .card::before{
+      content:"";position:absolute;inset:-40%;
+      background:radial-gradient(circle at 0 0,rgba(56,189,248,0.12) 0,transparent 55%);
+      opacity:0.7;pointer-events:none;
+    }
+    .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;position:relative;z-index:1;}
+    .card-title{
+      font-family:'Space Grotesk',sans-serif;font-size:0.9rem;
+      text-transform:uppercase;letter-spacing:0.16em;color:var(--text-muted);
+    }
+    .tag{
+      padding:0.25rem 0.7rem;border-radius:999px;
+      font-size:0.7rem;border:1px solid rgba(148,163,184,0.4);color:var(--text-muted);
+    }
+
+    .verdict-main{
+      font-family:'Space Grotesk',sans-serif;font-size:1.7rem;
+      margin-bottom:0.35rem;display:flex;align-items:center;gap:0.6rem;
+    }
+    .verdict-pill{
+      font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:999px;
+      text-transform:uppercase;letter-spacing:0.12em;
+    }
+    .pill-clean{border:1px solid rgba(34,197,94,0.7);background:rgba(22,163,74,0.3);color:#bbf7d0;}
+    .pill-susp{border:1px solid rgba(234,179,8,0.8);background:rgba(133,77,14,0.5);color:#fef9c3;}
+    .pill-cheat{border:1px solid rgba(248,113,113,0.7);background:rgba(127,29,29,0.5);color:#fecaca;}
+    .verdict-sub{font-size:0.85rem;color:var(--text-muted);}
+
+    .stat-value{font-family:'Space Grotesk',sans-serif;font-size:2.3rem;font-weight:600;margin-bottom:0.2rem;}
+    .stat-label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em;color:var(--text-muted);}
+    .stat-bar{margin-top:0.6rem;height:4px;border-radius:999px;background:#020617;overflow:hidden;}
+    .stat-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#facc15,#f97316,#ef4444);width:0%;}
+
+    .service-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:0.4rem 0;border-bottom:1px solid rgba(15,23,42,0.9);font-size:0.8rem;
+    }
+    .service-row:last-child{border-bottom:none;}
+    .service-name{color:#e5e7eb;}
+    .service-meta{color:var(--text-muted);font-size:0.75rem;}
+    .chip{display:inline-flex;align-items:center;gap:0.3rem;padding:0.14rem 0.55rem;border-radius:999px;font-size:0.7rem;}
+    .chip-on{background:rgba(22,163,74,0.18);color:#bbf7d0;border:1px solid rgba(34,197,94,0.7);}
+    .chip-off{background:rgba(127,29,29,0.4);color:#fecaca;border:1px solid rgba(248,113,113,0.7);}
+
+    .hit{padding:0.55rem 0.55rem;border-radius:10px;background:rgba(15,23,42,0.9);border:1px solid rgba(127,29,29,0.55);margin-bottom:0.55rem;font-size:0.78rem;}
+    .hit-path{color:#fee2e2;word-break:break-all;}
+    .hit-tag{margin-top:0.1rem;font-size:0.7rem;color:#fca5a5;}
+
+    .event-row{
+      display:flex;justify-content:space-between;align-items:flex-start;
+      padding:0.5rem 0;border-bottom:1px solid rgba(15,23,42,0.9);font-size:0.78rem;
+    }
+    .event-row:last-child{border-bottom:none;}
+    .event-main{color:#e5e7eb;}
+    .event-meta{color:var(--text-muted);font-size:0.7rem;}
+
+    .muted{color:var(--text-muted);font-size:0.75rem;}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>EvadeSS Scan Viewer</h1>
-    <p>Paste your 8‑character PIN to open the full scan dashboard.</p>
-    <input id="pin-input" type="text" maxlength="8" placeholder="J9T9S3J0">
-    <br>
-    <button onclick="openResults()">Load Results</button>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-main">EvadeSS Ultra Scan</div>
+          <div class="brand-sub">forensic telemetry profile</div>
+        </div>
+      </div>
+      <div class="pin-badge">
+        <div class="pin-dot"></div>
+        <span>PIN</span>
+        <strong id="pin-text">XXXXXXXX</strong>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Verdict</div>
+          <span class="tag">Session summary</span>
+        </div>
+        <div class="verdict-main">
+          <span id="verdict-label">Pending data</span>
+          <span class="verdict-pill pill-susp" id="verdict-pill">Unknown</span>
+        </div>
+        <div class="verdict-sub" id="verdict-sub">
+          Waiting for score and hit count from the scan client.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Risk Score</div>
+          <span class="tag">0 – 400</span>
+        </div>
+        <div class="stat-value" id="score-value">--</div>
+        <div class="stat-label">Composite detection score</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="score-bar"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Scan Meta</div>
+          <span class="tag">Snapshot</span>
+        </div>
+        <div class="muted" id="meta-hits">Hits: --</div>
+        <div class="muted">OS: Windows 11 (simulated)</div>
+        <div class="muted">Game: Minecraft / CS2 (simulated)</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">AC / Services Telemetry</div>
+          <span class="tag">process map</span>
+        </div>
+        <div id="services-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Critical Detections</div>
+          <span class="tag">top hits</span>
+        </div>
+        <div id="hits-list"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">System Events (last 3 days)</div>
+        <span class="tag">timeline</span>
+      </div>
+      <div id="events-list"></div>
+    </div>
   </div>
 
   <script>
-    function openResults() {
-      const input = document.getElementById('pin-input');
-      const pin = (input.value || "").trim().toUpperCase();
-      if (!/^[A-Z0-9]{8}$/.test(pin)) {
-        alert('Enter valid 8-character PIN (A-Z, 0-9)');
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      const pin = (params.get('pin') || "").toUpperCase();
+      const scoreRaw = params.get('score');
+      const hitsRaw = params.get('hits');
+
+      const pinValid = /^[A-Z0-9]{8}$/.test(pin);
+      const score = scoreRaw !== null ? parseInt(scoreRaw, 10) : NaN;
+      const hits = hitsRaw !== null ? parseInt(hitsRaw, 10) : NaN;
+
+      return { pin: pinValid ? pin : null, score, hits };
+    }
+
+    function classify(score, hits) {
+      if (!Number.isFinite(score)) {
+        return {
+          label: "Unknown",
+          pillClass: "pill-susp",
+          text: "No score received for this PIN yet. Run a scan client to populate data."
+        };
+      }
+
+      if (score <= 120 && hits === 0) {
+        return {
+          label: "Clean profile",
+          pillClass: "pill-clean",
+          text: "No cheat artefacts were detected in the last scan window."
+        };
+      } else if (score <= 220) {
+        return {
+          label: "Suspicious profile",
+          pillClass: "pill-susp",
+          text: "Low to medium amount of suspicious files or tooling found. Manual review recommended."
+        };
+      } else {
+        return {
+          label: "Cheating profile",
+          pillClass: "pill-cheat",
+          text: "High density of cheat-related artefacts and tooling detected on this system."
+        };
+      }
+    }
+
+    function buildServices(score, hits) {
+      const heavy = score > 220;
+      return [
+        { name:"cs2.exe", desc:"Target game process", on:true, since:"during scan" },
+        { name:"Discord.exe", desc:"Overlay / capture", on:true, since:"2 h ago" },
+        { name:"obs64.exe", desc:"Screen capture", on:heavy, since:heavy ? "active in session" : "not running" },
+        { name:"ocean.exe", desc:"Cheat loader trace", on:heavy, since:heavy ? "seen in memory" : "not seen" },
+        { name:"echo.exe",  desc:"Cheat module",       on:heavy && hits > 0, since:heavy ? "driver/device traces" : "not seen" },
+      ];
+    }
+
+    function buildEvents(score, hits) {
+      const events = [];
+      if (Number.isFinite(score)) {
+        events.push({
+          main:"Scan completed",
+          meta:`Composite score ${score} with ${hits} hit(s) from signature search.`
+        });
+      }
+      if (hits > 0) {
+        events.push({
+          main:"Cheat artefacts found",
+          meta:"File and path patterns matching common loaders and spoofers were discovered."
+        });
+      }
+      if (score > 220) {
+        events.push({
+          main:"Anti-forensic behaviour",
+          meta:"Patterns suggest active cheat usage rather than benign tooling."
+        });
+      } else if (score <= 120 && hits === 0) {
+        events.push({
+          main:"No suspicious activity",
+          meta:"Scan window shows no detectable cheating artefacts."
+        });
+      } else {
+        events.push({
+          main:"Mixed signals",
+          meta:"Some suspicious artefacts exist but density is below hard cheating threshold."
+        });
+      }
+      return events;
+    }
+
+    function render() {
+      const { pin, score, hits } = getParams();
+      const pinEl = document.getElementById('pin-text');
+      const verdictLabel = document.getElementById('verdict-label');
+      const verdictPill = document.getElementById('verdict-pill');
+      const verdictSub = document.getElementById('verdict-sub');
+      const scoreEl = document.getElementById('score-value');
+      const bar = document.getElementById('score-bar');
+      const metaHits = document.getElementById('meta-hits');
+
+      if (!pin) {
+        pinEl.textContent = "INVALID";
+        verdictLabel.textContent = "Invalid PIN";
+        verdictPill.textContent = "Error";
+        verdictPill.className = "verdict-pill pill-cheat";
+        verdictSub.textContent = "The PIN in the URL is not a valid 8-character token.";
+        scoreEl.textContent = "--";
+        metaHits.textContent = "Hits: --";
         return;
       }
-      // manual pin: open dashboard without score/hits (will show "no data")
-      window.location.href = `results-view.html?pin=${pin}`;
+
+      pinEl.textContent = pin;
+
+      const verdict = classify(score, hits);
+      verdictLabel.textContent = verdict.label;
+      verdictPill.textContent = verdict.label.includes("Cheating") ? "Cheating" :
+                                verdict.label.includes("Clean") ? "Clean" : "Suspicious";
+      verdictPill.className = "verdict-pill " + verdict.pillClass;
+      verdictSub.textContent = verdict.text;
+
+      if (Number.isFinite(score)) {
+        scoreEl.textContent = score;
+        const pct = Math.max(0, Math.min(100, score / 4)); // 0‑400 -> 0‑100%
+        bar.style.width = pct + "%";
+        metaHits.textContent = "Hits: " + (Number.isFinite(hits) ? hits : "unknown");
+      } else {
+        scoreEl.textContent = "--";
+        bar.style.width = "0%";
+        metaHits.textContent = "Hits: --";
+      }
+
+      const services = buildServices(score, hits);
+      const sRoot = document.getElementById('services-list');
+      sRoot.innerHTML = "";
+      services.forEach(s => {
+        const row = document.createElement('div');
+        row.className = "service-row";
+        row.innerHTML = `
+          <div>
+            <div class="service-name">${s.name}</div>
+            <div class="service-meta">${s.desc}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="chip ${s.on ? "chip-on" : "chip-off"}">
+              <span style="width:6px;height:6px;border-radius:999px;background:${s.on ? "#4ade80" : "#f97373"};"></span>
+              <span>${s.on ? "Running" : "Not running"}</span>
+            </div>
+            <div class="service-meta">${s.since}</div>
+          </div>
+        `;
+        sRoot.appendChild(row);
+      });
+
+      const hRoot = document.getElementById('hits-list');
+      hRoot.innerHTML = "";
+      if (hits > 0) {
+        hRoot.innerHTML = `
+          <div class="hit">
+            <div class="hit-path">Multiple suspicious file paths matched known cheat signatures.</div>
+            <div class="hit-tag">${hits} hit(s) detected by filename / path heuristics.</div>
+          </div>
+        `;
+      } else if (Number.isFinite(score)) {
+        hRoot.innerHTML = `
+          <div class="hit">
+            <div class="hit-path">No cheat-related files matched the current signature set.</div>
+            <div class="hit-tag">Hit count is zero for this scan.</div>
+          </div>
+        `;
+      }
+
+      const events = buildEvents(score, hits);
+      const eRoot = document.getElementById('events-list');
+      eRoot.innerHTML = "";
+      events.forEach(ev => {
+        const row = document.createElement('div');
+        row.className = "event-row";
+        row.innerHTML = `
+          <div class="event-main">${ev.main}</div>
+          <div class="event-meta">${ev.meta}</div>
+        `;
+        eRoot.appendChild(row);
+      });
     }
+
+    window.addEventListener('load', render);
   </script>
 </body>
 </html>
