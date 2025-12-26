@@ -5,34 +5,336 @@
   <title>EvadeSS Scan Results</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; background:#050509; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
-    .wrap { max-width:1200px; margin:2rem auto; padding:2rem; }
-    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:1rem; }
-    .pin { font-size:1.1rem; margin-bottom:1.5rem; }
-    .badge { display:inline-block; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.75rem; background:#991b1b; }
-    .grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-    .card { background:#111827; border-radius:12px; padding:1.5rem; border:1px solid #1f2937; }
-    .label { color:#9ca3af; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.25rem; }
-    .value { font-size:0.95rem; }
+    :root {
+      --bg-main:#020617;
+      --bg-elevated:rgba(15,23,42,0.96);
+      --border-sub:#1f2937;
+      --accent-red:#f97373;
+      --accent-green:#4ade80;
+      --accent-amber:#fbbf24;
+      --accent-cyan:#22d3ee;
+      --text-main:#f9fafb;
+      --text-muted:#9ca3af;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 0 0,#1e293b 0,transparent 55%),
+        radial-gradient(circle at 100% 0,#111827 0,transparent 55%),
+        #020617;
+      color:var(--text-main);
+      font-family:'JetBrains Mono',monospace;
+    }
+    .shell{
+      max-width:1280px;
+      margin:2rem auto 3rem;
+      padding:0 1.5rem;
+    }
+
+    /* top bar */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0.9rem 1.25rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.3);
+      background:linear-gradient(135deg,rgba(15,23,42,0.95),rgba(15,23,42,0.85));
+      box-shadow:0 18px 40px rgba(0,0,0,0.8);
+      margin-bottom:1.8rem;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:0.8rem;
+      font-family:'Space Grotesk',sans-serif;
+    }
+    .brand-logo{
+      width:26px;height:26px;
+      border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#f97373,#e11d48);
+      box-shadow:0 0 22px rgba(248,113,113,0.7);
+    }
+    .brand-main{font-weight:600;font-size:1rem;}
+    .brand-sub{font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.16em;}
+    .pin-badge{
+      font-size:0.8rem;
+      padding:0.35rem 0.9rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
+      background:rgba(15,23,42,0.9);
+      display:flex;align-items:center;gap:0.4rem;
+    }
+    .pin-dot{
+      width:7px;height:7px;border-radius:999px;
+      background:var(--accent-green);
+      box-shadow:0 0 10px rgba(74,222,128,0.9);
+    }
+
+    /* main layout */
+    .grid-3{
+      display:grid;
+      grid-template-columns:1.7fr 1fr 1fr;
+      gap:1.4rem;
+      margin-bottom:1.4rem;
+    }
+    .grid-2{
+      display:grid;
+      grid-template-columns:1.6fr 1.4fr;
+      gap:1.4rem;
+      margin-bottom:1.4rem;
+    }
+    .card{
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(15,23,42,0.97),rgba(15,23,42,0.92));
+      border:1px solid rgba(30,64,175,0.4);
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.9),
+        inset 0 0 0 1px rgba(15,23,42,0.9);
+      padding:1.25rem 1.35rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:radial-gradient(circle at 0 0,rgba(56,189,248,0.12) 0,transparent 55%);
+      opacity:0.7;
+      pointer-events:none;
+    }
+    .card-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:0.85rem;
+      position:relative;
+      z-index:1;
+    }
+    .card-title{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:0.9rem;
+      text-transform:uppercase;
+      letter-spacing:0.16em;
+      color:var(--text-muted);
+    }
+    .tag{
+      padding:0.25rem 0.7rem;
+      border-radius:999px;
+      font-size:0.7rem;
+      border:1px solid rgba(148,163,184,0.4);
+      color:var(--text-muted);
+    }
+
+    /* big verdict */
+    .verdict-main{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:1.7rem;
+      margin-bottom:0.35rem;
+      display:flex;
+      align-items:center;
+      gap:0.6rem;
+    }
+    .verdict-pill{
+      font-size:0.75rem;
+      padding:0.2rem 0.6rem;
+      border-radius:999px;
+      border:1px solid rgba(248,113,113,0.7);
+      background:rgba(127,29,29,0.5);
+      color:#fecaca;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+    }
+    .verdict-sub{
+      font-size:0.85rem;
+      color:var(--text-muted);
+    }
+
+    /* stat cards */
+    .stat-value{
+      font-family:'Space Grotesk',sans-serif;
+      font-size:2.3rem;
+      font-weight:600;
+      margin-bottom:0.2rem;
+    }
+    .stat-label{
+      font-size:0.78rem;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      color:var(--text-muted);
+    }
+    .stat-bar{
+      margin-top:0.6rem;
+      height:4px;
+      border-radius:999px;
+      background:#020617;
+      overflow:hidden;
+    }
+    .stat-bar-fill{
+      height:100%;
+      width:70%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#facc15,#f97316,#ef4444);
+    }
+
+    /* services list */
+    .service-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0.4rem 0;
+      border-bottom:1px solid rgba(15,23,42,0.9);
+      font-size:0.8rem;
+    }
+    .service-row:last-child{border-bottom:none;}
+    .service-name{color:#e5e7eb;}
+    .service-meta{color:var(--text-muted);font-size:0.75rem;}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:0.3rem;
+      padding:0.14rem 0.55rem;
+      border-radius:999px;
+      font-size:0.7rem;
+    }
+    .chip-on{
+      background:rgba(22,163,74,0.18);
+      color:#bbf7d0;
+      border:1px solid rgba(34,197,94,0.7);
+    }
+    .chip-off{
+      background:rgba(127,29,29,0.4);
+      color:#fecaca;
+      border:1px solid rgba(248,113,113,0.7);
+    }
+
+    /* detections list */
+    .hit{
+      padding:0.55rem 0.55rem;
+      border-radius:10px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(127,29,29,0.55);
+      margin-bottom:0.55rem;
+      font-size:0.78rem;
+    }
+    .hit-path{color:#fee2e2;word-break:break-all;}
+    .hit-tag{
+      margin-top:0.1rem;
+      font-size:0.7rem;
+      color:#fca5a5;
+    }
+
+    /* system events */
+    .event-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      padding:0.5rem 0;
+      border-bottom:1px solid rgba(15,23,42,0.9);
+      font-size:0.78rem;
+    }
+    .event-row:last-child{border-bottom:none;}
+    .event-main{color:#e5e7eb;}
+    .event-meta{color:var(--text-muted);font-size:0.7rem;}
+
+    /* small helper */
+    .muted{color:var(--text-muted);font-size:0.75rem;}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Scan Results</h1>
-    <div class="pin">Pin: <span id="pin-text">UNKNOWN</span></div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="label">Status</div>
-        <div class="value"><span class="badge" id="status-badge">Checking...</span></div>
+  <div class="shell">
+    <!-- top bar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>
+          <div class="brand-main">EvadeSS Ultra Scan</div>
+          <div class="brand-sub">forensic telemetry profile</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="label">Risk Score</div>
-        <div class="value" id="score-value">-</div>
+      <div class="pin-badge">
+        <div class="pin-dot"></div>
+        <span>PIN</span>
+        <strong id="pin-text">XXXXXXXX</strong>
       </div>
     </div>
 
-    <!-- add more cards for PC info, logs etc later -->
+    <!-- row: verdict + score + session -->
+    <div class="grid-3">
+      <!-- verdict -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Verdict</div>
+          <span class="tag">Session summary</span>
+        </div>
+        <div class="verdict-main">
+          <span id="verdict-label">Cheating profile</span>
+          <span class="verdict-pill" id="verdict-pill">Flagged</span>
+        </div>
+        <div class="verdict-sub" id="verdict-sub">
+          Multiple cheat artefacts and process anomalies detected across the last boot session.
+        </div>
+      </div>
+
+      <!-- risk score -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Risk Score</div>
+          <span class="tag">0 – 400</span>
+        </div>
+        <div class="stat-value" id="score-value">312</div>
+        <div class="stat-label">Composite detection score</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="score-bar"></div></div>
+      </div>
+
+      <!-- session info -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Session Info</div>
+          <span class="tag">Snapshot</span>
+        </div>
+        <div class="muted" id="session-game">Game: Minecraft Java</div>
+        <div class="muted" id="session-os">OS: Windows 11 Enterprise Eval</div>
+        <div class="muted" id="session-age">Scan age: 3 minutes ago</div>
+      </div>
+    </div>
+
+    <!-- row: AC/services + detections -->
+    <div class="grid-2">
+      <!-- AC & services -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">AC / Services Telemetry</div>
+          <span class="tag">process map</span>
+        </div>
+        <div id="services-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- detections -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Critical Detections</div>
+          <span class="tag">top hits</span>
+        </div>
+        <div id="hits-list">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- row: system events -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">System Events (last 3 days)</div>
+        <span class="tag">timeline</span>
+      </div>
+      <div id="events-list">
+        <!-- filled by JS -->
+      </div>
+    </div>
   </div>
 
   <script>
@@ -43,20 +345,110 @@
       return pin;
     }
 
+    // Fake data generator – later you can replace with real JSON
+    function buildFakeProfile(pin) {
+      const baseScore = 180 + (pin.charCodeAt(0) % 120);
+      const score = Math.min(380, baseScore);
+      const verdict = score > 260 ? "Cheating profile" : (score > 210 ? "Suspicious profile" : "Clean profile");
+      const verdictTag = score > 260 ? "Flagged" : (score > 210 ? "Watch" : "Clean");
+
+      const services = [
+        { name:"cs2.exe", desc:"Target game process", on:true,  since:"47 min ago" },
+        { name:"Discord.exe", desc:"Overlay / capture",  on:true,  since:"2 h ago" },
+        { name:"obs64.exe", desc:"Screen capture",      on:false, since:"not running" },
+        { name:"ocean.exe", desc:"Cheat loader trace",  on:score>260, since: score>260 ? "during scan" : "not seen" },
+        { name:"echo.exe",  desc:"Cheat module",        on:score>260, since: score>260 ? "during scan" : "not seen" },
+        { name:"steam.exe", desc:"Platform",            on:true,  since:"3 h ago" },
+      ];
+
+      const hits = [
+        { path:"C:\\Users\\Public\\ocean_loader_new.exe", tag:"Ocean loader" },
+        { path:"C:\\Users\\User\\AppData\\Roaming\\echo\\echo_driver.sys", tag:"Kernel cheat driver" },
+        { path:"C:\\Windows\\Temp\\ac_spoofer_stub.tmp", tag:"HWID spoof artefact" },
+      ];
+
+      const events = [
+        { main:"Prefetch folder wiped", meta:"Prefetch contents dropped to < 5 files · 1.2 h ago" },
+        { main:"Cheat artefact written", meta:"echo_driver.sys touched within last 24h" },
+        { main:"USB device activity", meta:"Mass storage mounted 2 h ago" },
+        { main:"System restore point", meta:"Created 3 days ago · often used before cheating" },
+      ];
+
+      return { score, verdict, verdictTag, services, hits, events };
+    }
+
+    function renderProfile(profile, pin) {
+      document.getElementById('pin-text').textContent = pin;
+
+      // verdict
+      document.getElementById('score-value').textContent = profile.score;
+      document.getElementById('verdict-label').textContent = profile.verdict;
+      document.getElementById('verdict-pill').textContent = profile.verdictTag;
+
+      const bar = document.getElementById('score-bar');
+      bar.style.width = (profile.score / 4) + "%";
+
+      // services
+      const sRoot = document.getElementById('services-list');
+      sRoot.innerHTML = "";
+      profile.services.forEach(s => {
+        const row = document.createElement('div');
+        row.className = "service-row";
+        row.innerHTML = `
+          <div>
+            <div class="service-name">${s.name}</div>
+            <div class="service-meta">${s.desc}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="chip ${s.on ? "chip-on" : "chip-off"}">
+              <span style="width:6px;height:6px;border-radius:999px;background:${s.on ? "#4ade80" : "#f97373"};"></span>
+              <span>${s.on ? "Running" : "Not running"}</span>
+            </div>
+            <div class="service-meta">${s.since}</div>
+          </div>
+        `;
+        sRoot.appendChild(row);
+      });
+
+      // hits
+      const hRoot = document.getElementById('hits-list');
+      hRoot.innerHTML = "";
+      profile.hits.forEach(h => {
+        const div = document.createElement('div');
+        div.className = "hit";
+        div.innerHTML = `
+          <div class="hit-path">${h.path}</div>
+          <div class="hit-tag">${h.tag}</div>
+        `;
+        hRoot.appendChild(div);
+      });
+
+      // events
+      const eRoot = document.getElementById('events-list');
+      eRoot.innerHTML = "";
+      profile.events.forEach(ev => {
+        const row = document.createElement('div');
+        row.className = "event-row";
+        row.innerHTML = `
+          <div class="event-main">${ev.main}</div>
+          <div class="event-meta">${ev.meta}</div>
+        `;
+        eRoot.appendChild(row);
+      });
+    }
+
     window.addEventListener('load', () => {
       const pin = getPinFromQuery();
       if (!pin) {
-        document.getElementById('pin-text').textContent = 'INVALID PIN';
-        document.getElementById('status-badge').textContent = 'Error';
+        document.getElementById('pin-text').textContent = "INVALID";
+        document.getElementById('verdict-label').textContent = "Invalid or missing PIN";
+        document.getElementById('verdict-pill').textContent = "Error";
+        document.getElementById('score-value').textContent = "--";
         return;
       }
 
-      document.getElementById('pin-text').textContent = pin;
-
-      // temporary fake data – later hook to real JSON if you want
-      const score = Math.floor(Math.random() * 200) + 100;
-      document.getElementById('score-value').textContent = score;
-      document.getElementById('status-badge').textContent = score > 200 ? 'Cheating' : 'Clean';
+      const profile = buildFakeProfile(pin);
+      renderProfile(profile, pin);
     });
   </script>
 </body>
