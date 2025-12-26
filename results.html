@@ -65,11 +65,22 @@
         </div>
         <div class="terminal-body">
             <div id="results-container">
+                <!-- Input / loading state -->
                 <div class="loading" id="loading-state">
-                    <i class="fas fa-spinner"></i>
-                    <h2>Scanning for PIN...</h2>
-                    <p>Use format: <code>https://www.evadess.com/results#results/pin/J9T9S3J0</code></p>
+                    <i class="fas fa-key"></i>
+                    <h2>Enter Scan PIN</h2>
+                    <p>Paste your 8-character PIN from EvadeSS scanner</p>
+                    <input id="pin-input" type="text" maxlength="8" placeholder="J9T9S3J0"
+                           style="width: 250px; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(148,163,184,0.3); border-radius: 8px; color: #f9fafb; font-size: 1.5rem; font-family: 'JetBrains Mono'; text-transform: uppercase; text-align: center; margin-top: 1.5rem;">
+                    <div style="margin-top: 1.5rem;">
+                        <button onclick="loadPin()" style="padding: 1rem 2rem; background: #c41e3a; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Load Results</button>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.8rem; color: #6b7280;">
+                        Or open directly: https://www.evadess.com/results#results/pin/YOURPIN
+                    </p>
                 </div>
+
+                <!-- Results state -->
                 <div id="results-state" style="display: none;">
                     <div class="scan-header">
                         <div class="scan-title">ULTRA SCAN ANALYSIS</div>
@@ -117,7 +128,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> <!-- /results-state -->
             </div>
         </div>
     </div>
@@ -134,16 +145,36 @@
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('results-state').style.display = 'block';
             document.getElementById('scan-pin').textContent = pin;
+
             const score = Math.floor(Math.random() * 200) + 100;
             document.getElementById('risk-score').textContent = `🚨 ${score}`;
             document.getElementById('status').textContent = score > 200 ? 'DETECTED' : 'CLEAN';
             document.getElementById('hit-count').textContent = Math.floor(Math.random() * 20) + 5;
         }
 
+        function loadPin() {
+            const input = document.getElementById('pin-input');
+            const pin = (input.value || "").trim().toUpperCase();
+            if (!/^[A-Z0-9]{8}$/.test(pin)) {
+                alert('Enter valid 8-character PIN (A-Z, 0-9)');
+                return;
+            }
+            // update URL hash so link can be shared
+            window.location.hash = `results/pin/${pin}`;
+            // immediately show results without reload
+            showResults(pin);
+        }
+
         window.addEventListener('load', () => {
             const pin = parsePinFromUrl();
             if (pin) {
+                // came from batch link or shared URL
+                document.getElementById('pin-input').value = pin;
                 showResults(pin);
+            } else {
+                // manual input mode
+                document.getElementById('loading-state').style.display = 'block';
+                document.getElementById('results-state').style.display = 'none';
             }
         });
     </script>
