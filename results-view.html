@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EvadeSS Scan Results</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#050509; color:#f9fafb; font-family:'JetBrains Mono',monospace; }
+    .wrap { max-width:1200px; margin:2rem auto; padding:2rem; }
+    h1 { font-family:'Space Grotesk',sans-serif; margin-bottom:1rem; }
+    .pin { font-size:1.1rem; margin-bottom:1.5rem; }
+    .badge { display:inline-block; padding:0.25rem 0.75rem; border-radius:999px; font-size:0.75rem; background:#991b1b; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .card { background:#111827; border-radius:12px; padding:1.5rem; border:1px solid #1f2937; }
+    .label { color:#9ca3af; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.25rem; }
+    .value { font-size:0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Scan Results</h1>
+    <div class="pin">Pin: <span id="pin-text">UNKNOWN</span></div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Status</div>
+        <div class="value"><span class="badge" id="status-badge">Checking...</span></div>
+      </div>
+      <div class="card">
+        <div class="label">Risk Score</div>
+        <div class="value" id="score-value">-</div>
+      </div>
+    </div>
+
+    <!-- add more cards for PC info, logs etc later -->
+  </div>
+
+  <script>
+    function getPinFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const pin = (params.get('pin') || "").toUpperCase();
+      if (!/^[A-Z0-9]{8}$/.test(pin)) return null;
+      return pin;
+    }
+
+    window.addEventListener('load', () => {
+      const pin = getPinFromQuery();
+      if (!pin) {
+        document.getElementById('pin-text').textContent = 'INVALID PIN';
+        document.getElementById('status-badge').textContent = 'Error';
+        return;
+      }
+
+      document.getElementById('pin-text').textContent = pin;
+
+      // temporary fake data – later hook to real JSON if you want
+      const score = Math.floor(Math.random() * 200) + 100;
+      document.getElementById('score-value').textContent = score;
+      document.getElementById('status-badge').textContent = score > 200 ? 'Cheating' : 'Clean';
+    });
+  </script>
+</body>
+</html>
